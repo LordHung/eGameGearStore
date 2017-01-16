@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+
+{% block head_title %}Welcome | {{ block.super }}{% endblock %}
+
+<style>
+{% block style %}
+.navbar-static-top {
+	margin-bottom: 0px !important;
+}
+
+.jumbotron {
+	background-color:#151515;
+	color: #FFF;
+}
+
+{% endblock %}
+</style>
+
+
+
+{% block jumbotron %}
+ {% if not request.user.is_authenticated %}
+
+<div class="jumbotron">
+ <div class="container">
+	<div class="row">
+		<div class='col-sm-6'>
+		<h1>Play Django 1.10</h1>
+		<p>Play Django project là nơi bắt đầu học Django tốt nhất của bạn. Tham gia ngay!.</p>
+		<p>
+		<a class="btn btn-lg btn-primary" href="" role="button">Join Us &raquo;</a>
+		</p>
+		</div>
+		<div class='col-sm-6' >
+			<iframe width="520" height="315" src="https://www.youtube.com/embed/Niq-HoraNPo" frameborder="0" allowfullscreen></iframe>
+
+ 		</div>
+		</div>
+	</div>
+ </div>
+ {% endif %}
+{% endblock %}
+
+
+
+
+{% block content %}
+ {% if request.user.is_authenticated %}
+<h1>You are logged in!</h1>
+
+	{% if queryset %}
+	<h2>Welcome Staff</h2>
+	<table class='table'>
+	{% for instance in queryset %}
+		<tr><td>{{ forloop.counter }}</td><td>{{ instance.email }}</td><td>{{ instance.full_name }}</td><td>{{ instance.timestamp|timesince }} ago</td></tr>
+		{% if instance.email == "abc@gmail.edu" %}
+		<tr><td>is equal</td></tr>
+		{% endif %}
+	{% endfor %}
+	</table>
+
+	{% endif %}
+
+ {% else %}
+<div class="row">
+
+  <div class="col-sm-3 pull-right">
+
+			<p class='lead text-align-center'>{{ title }}</p>
+
+			<form method='POST' action=''>{% csrf_token %}
+			{{ form|crispy }}
+
+			<input class='btn btn-primary' type='submit' value='Sign Up' />
+
+			</form>
+	</div>
+
+<div class='col-sm-3'>
+<p class='lead text-align-center'>Django &amp; Bootstrap</p>
+			<img src='{% static "img/django-bootstrap-small.png" %}' class='img-responsive' />
+</div>
+
+<div class='col-sm-3'>
+	<p class='lead text-align-center'>Dành cho newbie</p>
+				<img src='{% static "img/newbie-small.png" %}' class='img-responsive' />
+
+</div>
+
+<div class='col-sm-3'>
+	<p class='lead text-align-center'>Mã nguồn mở</p>
+				<img src='{% static "img/github-mark-small.png" %}' class='img-responsive' />
+</div>
+
+
+</div>
+{% endif %}
+
+{% endblock %}
