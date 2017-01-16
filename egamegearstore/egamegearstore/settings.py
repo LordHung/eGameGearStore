@@ -29,20 +29,20 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
-    #django apps
+    # django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #third party apps
+    # third party apps
     'crispy_forms',
     'registration',
-    #my apps
+    # my apps
     'newsletter',
+    'products',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +78,6 @@ WSGI_APPLICATION = 'egamegearstore.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -92,7 +91,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -111,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -125,27 +122,27 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root")
+STATIC_ROOT = os.path.join(os.path.dirname(
+    BASE_DIR), "static_in_env", "static_root")
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static_in_pro", "our_static"),
-    #os.path.join(BASE_DIR, "static_in_env"),
-    #'/var/www/static/',
+    # os.path.join(BASE_DIR, "static_in_env"),
+    # '/var/www/static/',
 )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_root")
+MEDIA_ROOT = os.path.join(os.path.dirname(
+    BASE_DIR), "static_in_env", "media_root")
 
 
-
-#Crispy FORM TAGs SETTINGS
+# Crispy FORM TAGs SETTINGS
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
-#DJANGO REGISTRATION REDUX SETTINGS
+# DJANGO REGISTRATION REDUX SETTINGS
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
 SITE_ID = 1
