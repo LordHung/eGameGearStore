@@ -81,8 +81,9 @@ WSGI_APPLICATION = 'egamegearstore.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
+        'NAME': 'egamegearstore',
+        'USER': 'lordhung',
+        'PASSWORD': '123456',
         'HOST': 'db',
         'PORT': 5432,
     }

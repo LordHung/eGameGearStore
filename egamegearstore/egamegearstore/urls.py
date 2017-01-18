@@ -13,16 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-# from django.conf import settings
-# from django.conf.urls import include, url
-# from django.conf.urls.static import static
-# from django.contrib import admin
+
 from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from egamegearstore import views as egamegearstore_view
 from newsletter import views as newsletter_view
+# from products import views as products_view
 
 urlpatterns = [
     # Examples:
@@ -30,9 +28,10 @@ urlpatterns = [
     url(r'^contact/$', newsletter_view.contact, name='contact'),
     url(r'^about/$', egamegearstore_view.about, name='about'),
     # url(r'^blog/', include('blog.urls')),
-    url(r'^admin/', admin.site.urls),
-    # url(r'^admin/', include(admin.site.urls)),
+    # url(r'^admin/', admin.site.urls),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^products/', include('products.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{# object_list same with product_list #}
+{# {{ user }}#}
+{# {{ now }}}#}
+<table class="table table-striped table-hover">
+{% for object in object_list %}
+    <tr>
+        <td>
+            {{ object.title }}
+        </td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock  %}
