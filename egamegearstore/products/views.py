@@ -9,13 +9,17 @@ from django.utils import timezone
 
 class ProductListView(ListView):
     model = Product
+    queryset = Product.objects.all()
+    #queryset = Product.objects.filter(active=False)
 
     # overriding context data of ListView
     def get_context_data(self, *args, **kwargs):
-        context = super(ProductListView, self).get_context_data(*args,**kwargs)
+        context = super(ProductListView, self).get_context_data(
+            *args, **kwargs)
         # print(context)
         context['now'] = timezone.now()
         return context
+
 
 class ProductDetailView(DetailView):
     model = Product
