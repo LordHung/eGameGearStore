@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 
 
@@ -12,3 +13,11 @@ class Product(models.Model):
 
     def __str__(self):  # giống với def __unicode__(self): trong python2
         return self.title
+
+    # lấy đường dẫn tuyệt đối product_detail
+    def get_absolute_url(self):
+        return reverse("product_detail", kwargs={"pk": self.pk})
+
+    # Product Images
+
+    # Product Category

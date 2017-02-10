@@ -11,5 +11,5 @@ urlpatterns = [
     # url(r'^(?P<id>\d+)',prod_detail.product_detail_view_func,name='product_detail_view_function'),
     # classbaseview sample
     url(r'^$', ProductListView.as_view(), name='product_list'),
-    url(r'^(?P<pk>\d+)', ProductDetailView.as_view(), name='product_detail'),
+    url(r'^(?P<pk>\d+)/$', ProductDetailView.as_view(), name='product_detail'),
 ]
