@@ -4,20 +4,20 @@ body {
 
 .navbar-static-top {
   margin-bottom: 19px;
-  background-color: #5F04B4;
-  border-color: #8000FF;
+  background-color: #000000;
+  border-color: #A9A9A9;
 }
 
 .navbar-default .navbar-brand {
-  color: #FFF;
+  color: #FFF !important;
 }
 
 .navbar-default .navbar-brand:hover {
-  color: #777;
+  color: #EED !important;
 }
 
 .navbar-default .navbar-nav>li>a:hover {
-  color: #999;
+  color: #EFF !important;
 }
 
 .navbar-default .navbar-toggle {
@@ -25,9 +25,9 @@ body {
 }
 
 .navbar-toggle:hover {
-	background-color: #8000FF !important;
+	background-color: #A9A9A9 !important;
 }
 
 .navbar-toggle {
-	background-color: #5F04B4 !important;
+	background-color: #000000 !important;
 }
