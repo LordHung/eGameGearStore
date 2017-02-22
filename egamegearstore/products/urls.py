@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 # from products.views import ProductDetailView
 # from products import views as prod_detail
-from .views import ProductDetailView, ProductListView
+from .views import ProductDetailView, ProductListView, VariationListView
 
 urlpatterns = [
     # functionview sample, error multiple id here??
@@ -12,4 +12,6 @@ urlpatterns = [
     # classbaseview sample
     url(r'^$', ProductListView.as_view(), name='product_list'),
     url(r'^(?P<pk>\d+)/$', ProductDetailView.as_view(), name='product_detail'),
+    url(r'(?P<pk>\d+)/inventory/$',
+        VariationListView.as_view(), name='product_inventory'),
 ]
