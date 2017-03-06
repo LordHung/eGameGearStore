@@ -6,12 +6,13 @@ from django.views.generic.list import ListView
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import VariationInventoryFormSet
 from .models import Product, Variation
+from .mixins import StaffRequiredMixin, LoginRequiredMixin
 from django.utils import timezone
 # from django.core.urlresolvers import reverse
 # Create your views here.
 
 
-class VariationListView(ListView):
+class VariationListView(StaffRequiredMixin, ListView):
     """docstring for VariationListView."""
     model = Variation
     queryset = Variation.objects.all()
@@ -42,10 +43,10 @@ class VariationListView(ListView):
                 product = get_object_or_404(Product, pk=product_pk)
                 new_item.product = product
                 new_item.save()
-                
+
             messages.success(
                 request, 'Your inventory and pricing has been updated.')
-            return redirect('product_list')
+            return redirect('/products/')
         raise Http404
 
 
