@@ -25,12 +25,13 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=20)
     active = models.BooleanField(default=True)
-    # slug
-    # inventory
-
+    categories = models.ManyToManyField('Category', blank=True)
+    default = models.ForeignKey(
+        'Category', related_name='default_category', null=True, blank=True)
     objects = ProductManager()
 
-    def __str__(self):  # giống với def __unicode__(self),__init__: trong python2
+    # giống với def __unicode__(self),__init__: trong python2
+    def __str__(self):
         return self.title
 
     # lấy đường dẫn tuyệt đối product_detail
@@ -67,6 +68,9 @@ def product_saved_receiver(sender, instance, created, *args, **kwargs):
     variations = product.variation_set.all()
     if variations.count() == 0:
         new_var = Variation()
+
+    def __str__(self):
+        return self.product.title
         new_var.product = product
         new_var.title = "Default"
         new_var.price = product.price
@@ -93,4 +97,14 @@ class ProductImage(models.Model):
     def __str__(self):
         return self.product.title
 
+
 # Product Category
+class Category(models.Model):
+    title = models.CharField(max_length=120, unique=True)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(default=True)
+    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    def __str__(self):
+        return self.title
