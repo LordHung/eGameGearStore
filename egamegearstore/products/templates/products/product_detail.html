@@ -7,8 +7,7 @@
         var price = $(".variation_select option:selected ").attr("data-price")
         var sale_price = $(".variation_select option:selected").attr("data-sale-price")
         if (sale_price != "" && sale_price != "None" && sale_price != null){
-            $("#price").html("<h3>" + sale_price + " <small style='color:red;text-decoration:line-through;'>Original price:"
-            + price + "</small></h3>");
+            $("#price").html("<h3>" + sale_price + " <small class='ori-price'>" + price + "</small></h3>");
         } else {
             $("#price").html(price);
         }
@@ -46,17 +45,28 @@
 {# Product Sidebar #}
 <div class="col-sm-4">
 
-<h3 id='price'>{{ object.price }}</h3>
 {% if object.variation_set.count > 1 %}
+<h3 id='price'>{{ object.variation_set.first.price }}</h3>
 {# dropdown option #}
 <select class="form-control variation_select">
-
 {% for vari_obj in object.variation_set.all %}
 <option data-img="#" data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option>
 {% endfor %}}
-
 </select>
+
+{% else %}
+{# Nếu có sale_price thì show cả 2 price, còn ko thì chỉ show price  #}
+<h3 id='price'>{% if object.variation_set.first.sale_price %}
+{{ object.variation_set.first.sale_price }}
+<small class='ori-price'>{{ object.variation_set.first.price }}</small>
+
+{% else %}
+{{ object.variation_set.first.price }}
+
 {% endif %}
+</h3>
+{% endif %}
+
 <br/>
 <a href="#">Add to Cart</a>
 <br/>
