@@ -96,9 +96,6 @@ def product_saved_receiver(sender, instance, created, *args, **kwargs):
     variations = product.variation_set.all()
     if variations.count() == 0:
         new_var = Variation()
-
-    def __str__(self):
-        return self.product.title
         new_var.product = product
         new_var.title = "Default"
         new_var.price = product.price
