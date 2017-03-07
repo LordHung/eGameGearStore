@@ -19,6 +19,14 @@ class ProductManager(models.Manager):
     def all(self, *args, **kawrgs):
         return self.get_queryset().active()
 
+    def get_related(self, instance):
+        products_one = self.get_queryset().filter(
+            categories__in=instance.categories.all())
+        products_two = self.get_queryset().filter(default=instance.default)
+        # Query related prod trong category nhưng ngoại trừ chính sản phẩm này
+        qs = (products_one | products_two).exclude(id=instance.id).distinct()
+        return qs
+
 
 class Product(models.Model):
     title = models.CharField(max_length=120)
@@ -29,6 +37,10 @@ class Product(models.Model):
     default = models.ForeignKey(
         'Category', related_name='default_category', null=True, blank=True)
     objects = ProductManager()
+
+    # Change model ordering, orderby title,etc.
+    class Meta:
+        ordering = ['title']
 
     # giống với def __unicode__(self),__init__: trong python2
     def __str__(self):
@@ -112,4 +124,3 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse("category_detail", kwargs={"slug": self.slug})
-
