@@ -6,6 +6,7 @@ from django.contrib import admin
 # from products import views as prod_detail
 from .views import ProductDetailView, ProductListView, VariationListView
 
+
 urlpatterns = [
     # functionview sample, error multiple id here??
     # url(r'^(?P<id>\d+)',prod_detail.product_detail_view_func,name='product_detail_view_function'),

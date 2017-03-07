@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils.text import slugify
-# Create your models here.
+# Create your models here .
 
 
 class ProductQuerySet(models.query.QuerySet):
@@ -76,6 +76,7 @@ def product_saved_receiver(sender, instance, created, *args, **kwargs):
         new_var.price = product.price
         new_var.save()
 
+
 post_save.connect(product_saved_receiver, sender=Product)
 
 
@@ -108,3 +109,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("category_detail", kwargs={"slug": self.slug})
+
