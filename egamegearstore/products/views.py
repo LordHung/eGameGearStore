@@ -102,7 +102,7 @@ class ProductListView(ListView):
                 pass
         return qs
 
-
+import random
 class ProductDetailView(DetailView):
     model = Product
     # template_name=<appname>/<modelname>_detail.html
@@ -111,9 +111,9 @@ class ProductDetailView(DetailView):
         context = super(ProductDetailView, self).get_context_data(
             *args, **kwargs)
         instance = self.get_object()
-        # order by ?, limit to 6 products
-        context['related'] = Product.objects.get_related(
-            instance).order_by('?')[:6]
+        # order_by['-title'] can be replace below; limit to 6 products
+        context['related'] = sorted(Product.objects.get_related(
+            instance)[:6], key=lambda x: random.random(), reverse=True)
         return context
 
 

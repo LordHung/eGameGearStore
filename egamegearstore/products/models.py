@@ -38,9 +38,9 @@ class Product(models.Model):
         'Category', related_name='default_category', null=True, blank=True)
     objects = ProductManager()
 
-    # Change model ordering, orderby title,etc.
+    # Change model ordering, orderby reverse title,etc.
     class Meta:
-        ordering = ['title']
+        ordering = ['-title']
 
     # giống với def __unicode__(self),__init__: trong python2
     def __str__(self):
@@ -49,6 +49,12 @@ class Product(models.Model):
     # lấy đường dẫn tuyệt đối product_detail
     def get_absolute_url(self):
         return reverse("product_detail", kwargs={"pk": self.pk})
+
+    def get_image_url(self):
+        img=self.productimage_set.first()
+        if img:
+            return img.image.url
+        return img # None
 
 
 class Variation(models.Model):
