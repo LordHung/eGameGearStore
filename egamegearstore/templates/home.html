@@ -10,19 +10,48 @@
 .navbar-static-top {
 	margin-bottom: 0px !important;
 }
-
 .jumbotron {
 	background-color:#151515;
 	color: #FFF;
+	{% if featured_image.make_image_background %}
+	background-image: url("{{ featured_image.image.url }}");
+	background-repeat: no-repeat;
+	background-color:#000;
+	background-size: cover;
+	background-position-y: -280px;
+	{% if featured_image.text_css_color %}
+	color: #{{ featured_image.text_css_color }};
+	{% endif %}
+	{% endif %}
 }
-
 {% endblock %}
 </style>
 
 
 
 {% block jumbotron %}
- {% if not request.user.is_authenticated %}
+{% if not request.user.is_authenticated %}
+{% if featured_image %}
+<div class="jumbotron">
+ <div class="container">
+	<div class="row">
+		<div class='col-sm-6 text-center {% if featured_image.text_right %} pull-right {% endif %}'>
+		<h2>{{ featured_image.product.title }}</h2>
+		<p>{{ featured_image.product.description }}</p>
+		<p>
+			<a class="btn btn-lg btn-primary" href="{{ featured_image.product.get_absolute_url }}" role="button">More Details</a>
+		</p>
+		</div>
+		{% if not featured_image.make_image_background %}
+		<div class='col-sm-6' >
+			<img src="{{ featured_image.image.url }}" class="img-responsive"/>
+ 		</div>
+		{% endif %}
+		</div>
+	</div>
+ </div>
+{% else %}
+
 
 <div class="jumbotron">
  <div class="container">
@@ -41,7 +70,8 @@
 		</div>
 	</div>
  </div>
- {% endif %}
+{% endif %}
+{% endif %}
 {% endblock %}
 
 
