@@ -19,7 +19,7 @@
 	background-color:#000;
 	background-size: cover;
 	background-position-y: -175px;
-	height: 400px;
+	height: 300px;
 	{% if featured_image.text_css_color %}
 	color: #{{ featured_image.text_css_color }};
 	{% endif %}
@@ -31,12 +31,11 @@
 
 
 {% block jumbotron %}
-{% if not request.user.is_authenticated %}
 {% if featured_image %}
 <div class="jumbotron">
  <div class="container">
 	<div class="row">
-		<div class='col-sm-6 text-center {% if featured_image.text_right %} pull-right {% endif %}'>
+		<div class='col-sm-12 text-center {% if featured_image.text_right %} pull-right {% endif %}'>
 		<h2>{{ featured_image.product.title }}</h2>
 		<p>{{ featured_image.product.description }}</p>
 		<p>
@@ -72,13 +71,21 @@
 	</div>
  </div>
 {% endif %}
-{% endif %}
 {% endblock %}
 
 
 
 
 {% block content %}
+<div class='row'>
+    <h2>Recommended Products</h2>
+ {% include "products/products.html" with object_list=products col_class_set="col-sm-2" %}
+</div>
+<div class='row'>
+    <h2>Featured Products</h2>
+ {% include "products/products.html" with object_list=products2 %}
+</div>
+
  {% if request.user.is_authenticated %}
 <h1>You are logged in!</h1>
 
@@ -95,39 +102,39 @@
 
 	{% endif %}
 
- {% else %}
-<div class="row">
+ <!-- {% else %} -->
+<!-- <div class="row"> -->
 
-  <div class="col-sm-3 pull-right">
+ <!--  <div class="col-sm-3 pull-right"> -->
 
-			<p class='lead text-align-center'>{{ title }}</p>
+			<!-- <p class='lead text-align-center'>{{ title }}</p> -->
 
-			<form method='POST' action=''>{% csrf_token %}
-			{{ form|crispy }}
+			<!-- <form method='POST' action=''>{% csrf_token %} -->
+			<!-- {{ form|crispy }} -->
 
-			<input class='btn btn-primary' type='submit' value='Sign Up' />
+			<!-- <input class='btn btn-primary' type='submit' value='Sign Up' /> -->
 
-			</form>
-	</div>
+			<!-- </form> -->
+	<!-- </div> -->
 
-<div class='col-sm-3'>
-<p class='lead text-align-center'>Django &amp; Bootstrap</p>
-			<img src='{% static "img/django-bootstrap-small.png" %}' class='img-responsive' />
-</div>
+<!-- <div class='col-sm-3'> -->
+<!-- <p class='lead text-align-center'>Django &amp; Bootstrap</p> -->
+			<!-- <img src='{% static "img/django-bootstrap-small.png" %}' class='img-responsive' /> -->
+<!-- </div> -->
 
-<div class='col-sm-3'>
-	<p class='lead text-align-center'>Dành cho newbie</p>
-				<img src='{% static "img/newbie-small.png" %}' class='img-responsive' />
+<!-- <div class='col-sm-3'> -->
+	<!-- <p class='lead text-align-center'>Dành cho newbie</p> -->
+				<!-- <img src='{% static "img/newbie-small.png" %}' class='img-responsive' /> -->
 
-</div>
+<!-- </div> -->
 
-<div class='col-sm-3'>
-	<p class='lead text-align-center'>Mã nguồn mở</p>
-				<img src='{% static "img/github-mark-small.png" %}' class='img-responsive' />
-</div>
+<!-- <div class='col-sm-3'> -->
+	<!-- <p class='lead text-align-center'>Mã nguồn mở</p> -->
+				<!-- <img src='{% static "img/github-mark-small.png" %}' class='img-responsive' /> -->
+<!-- </div> -->
 
 
-</div>
+<!-- </div> -->
 {% endif %}
 
 {% endblock %}
