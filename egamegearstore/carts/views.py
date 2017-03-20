@@ -1,26 +1,33 @@
-from django.views.generic.base import View
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.views.generic.base import View
+from django.views.generic.detail import SingleObjectMixin
 # Create your views here.
 from products.models import Variation
 from carts.models import Cart, CartItem
 
 
-class CartView(View):
+class CartView(SingleObjectMixin, View):
+    model = Cart
+    template_name = 'carts/view.html'
 
-    def get(self, request, *args, **kwargs):
-        request.session.set_expiry(3)  # second
-        cart_id = request.session.get('cart_id')
+    def get_object(self, *args, **kwargs):
+        self.request.session.set_expiry(0)  # second
+        cart_id = self.request.session.get('cart_id')
         if cart_id is None:
             cart = Cart()
             cart.save()
             cart_id = cart.id
-            request.session['cart_id'] = cart_id
+            self.request.session['cart_id'] = cart_id
         cart = Cart.objects.get(id=cart_id)
-        # bind request user to cart.user
-        if request.user.is_authenticated():
-            cart.user = request.user
+        # bind self.request user to cart.user
+        if self.request.user.is_authenticated():
+            cart.user = self.request.user
             cart.save()
+        return cart
+
+    def get(self, request, *args, **kwargs):
+        cart = self.get_object()
         item_id = request.GET.get('item')
         delete = request.GET.get('delete')
         if item_id:
@@ -33,5 +40,8 @@ class CartView(View):
             else:
                 cart_item.quantity = qty
                 cart_item.save()
-            print(cart_item)
-        return HttpResponseRedirect('/')
+        context = {
+            'object': self.get_object()
+        }
+        template = self.template_name
+        return render(request, template, context)
