@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from egamegearstore import views as egamegearstore_view
 from newsletter import views as newsletter_view
+from carts.views import CartView
 # from products import views as products_view
 
 urlpatterns = [
@@ -33,6 +34,7 @@ urlpatterns = [
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^products/', include('products.urls')),
     url(r'^categories/', include('products.urls_categories')),
+    url(r'^cart/$', CartView.as_view(), name='cart'),
 ]
 
 if settings.DEBUG:
