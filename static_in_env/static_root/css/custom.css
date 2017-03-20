@@ -11,3 +11,7 @@
 	font-size: 18px;
 	vertical-align: middle;
 }
+.navbar-default
+.navbar-nav > li > a {
+    color:white;
+}
