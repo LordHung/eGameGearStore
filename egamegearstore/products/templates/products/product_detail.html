@@ -28,11 +28,11 @@
 <div class="col-sm-8">
 <h2>{{ object.title }}</h2>
 
-{# Product Image #}
+<!-- Product Image -->
 {% if object.get_image_url %}
-<div>
-    <img id='img' class="img-responsive" src='{{ object.get_image_url }}' />
-</div>
+    <div>
+        <img id='img' class="img-responsive" src='{{ object.get_image_url }}' />
+    </div>
 {% endif %}
 
 <br/>
@@ -41,36 +41,39 @@
 </p>
 </div>
 
-{# Product Sidebar #}
+<!-- Product Sidebar -->
 <div class="col-sm-4">
+<form method='GET' action='{% url 'cart' %}'>
+    {% if object.variation_set.count > 1 %}
+        <h3 id='price'>{{ object.variation_set.first.price }}</h3>
 
-{% if object.variation_set.count > 1 %}
-<h3 id='price'>{{ object.variation_set.first.price }}</h3>
-{# dropdown option #}
-<select class="form-control variation_select">
-{% for vari_obj in object.variation_set.all %}
-<option data-img="#" data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option>
-{% endfor %}}
-</select>
+        <!-- dropdown option -->
+        <select name='item' class="form-control variation_select">
+            {% for vari_obj in object.variation_set.all %}
+            <option data-img="#" data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option>
+            {% endfor %}}
+        </select>
 
-{% else %}
-{# Nếu có sale_price thì show cả 2 price, còn ko thì chỉ show price  #}
-<h3 id='price'>{% if object.variation_set.first.sale_price %}
-{{ object.variation_set.first.sale_price }}
-<small class='ori-price'>{{ object.variation_set.first.price }}</small>
+    {% else %}
+        <input type="hidden" name="item" value="{{ object.variation_set.first.id }}"/>
+        <!-- Nếu có sale_price thì show cả 2 price, còn ko thì chỉ show price --> 
+        <h3 id='price'>{% if object.variation_set.first.sale_price %}
+            {{ object.variation_set.first.sale_price }}
+            <small class='ori-price'>{{ object.variation_set.first.price }}</small>
 
-{% else %}
-{{ object.variation_set.first.price }}
+            {% else %}
+            {{ object.variation_set.first.price }}
 
-{% endif %}
-</h3>
-{% endif %}
-
+            {% endif %}
+        </h3>
+    {% endif %}
+    <input class="form-control" type="number" name="qty" value="1" />
 <br/>
-<a href="#">Add to Cart</a>
+<input type="submit" value="Add to cart" class="btn btn-default"/>
+</form>
 <br/>
 
-{# Social share #}
+<!-- Social share -->
 <hr/>
 <p>Share<br/>
 <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
