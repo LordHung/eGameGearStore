@@ -98,6 +98,9 @@ class Variation(models.Model):
     def remove_from_cart(self):
         return '%s?item=%s&qty=1&delete=True' % (reverse('cart'), self.id)
 
+    def get_title(self):
+        return '%s - %s' % (self.product.title, self.title)
+
 
 # make sure create default variation for product
 def product_saved_receiver(sender, instance, created, *args, **kwargs):

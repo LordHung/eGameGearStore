@@ -18,7 +18,6 @@ class CartItem(models.Model):
         return self.item.remove_from_cart()
 
 
-
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     itemList = models.ManyToManyField(Variation, through=CartItem)
