@@ -2,6 +2,17 @@
 
 
 {% block content %}
-    {{ object }} 
-    {{ object.itemList.all }}
+
+    <table class="table table-hover">
+        {% for item in object.cartitem_set.all  %}
+            <tr>
+                <td>{{ item.get_title }} </td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.linetotal }}</td>
+                <td class='text-right'><a href="{{ item.remove }}">X</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+
 {% endblock  %}

@@ -57,6 +57,9 @@ class Product(models.Model):
             return img.image.url
         return img  # None
 
+    def get_title(self):
+        return '%s - %s' % (self.item.product.title, self.item.title)
+
 
 class Variation(models.Model):
     product = models.ForeignKey(Product)
@@ -88,6 +91,12 @@ class Variation(models.Model):
 
     def get_absolute_url(self):
         return self.product.get_absolute_url()
+
+    def add_to_cart(self):
+        return '%s?item=%s&qty=1' % (reverse('cart'), self.id)
+
+    def remove_from_cart(self):
+        return '%s?item=%s&qty=1&delete=True' % (reverse('cart'), self.id)
 
 
 # make sure create default variation for product
