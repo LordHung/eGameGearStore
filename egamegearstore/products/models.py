@@ -75,18 +75,18 @@ class Variation(models.Model):
         return self.title
 
     def get_price(self):
-        if self.price is not None:
+        if self.sale_price is not None:
             return self.sale_price
         else:
             return self.price
 
     def get_html_price(self):
-        if self.price is not None:
+        if self.sale_price is not None:
             html_text = "<span class='sale-price'>%s </span>\
                 <span class='ori-price'>%s</span>"\
                 % (self.sale_price, self.price)
         else:
-            html_text = "<span class='ori-price'>%s</span>" % (self.price)
+            html_text = "<span>%s</span>" % (self.price)
         return mark_safe(html_text)
 
     def get_absolute_url(self):
