@@ -19,7 +19,29 @@
         // var img = $(".variation_select option:selected").attr("data-img")
         // $("img").attr("src",img);
     });
+
+    $('#btn-submit').click(function(event){
+        event.preventDefault();
+        var formData=$('#form-add').serialize();
+        console.log(formData);
+        $.ajax({
+            type: 'GET',
+            url: '{% url 'cart' %}',
+            data: formData,
+            success: function(data){
+                $('#msg-jquery').text('Added ' + data.item_added + ' Deleted ' +
+                data.deleted)
+            },
+            error: function(response, error){
+                // console.log(response)
+                // console.log(error)
+                $('#form-add').submit()
+            }
+        })
+        // $('#form-add').submit();
+    })
     {% endblock %}
+
 </script>
 
 {% block content %}
@@ -43,7 +65,9 @@
 
 <!-- Product Sidebar -->
 <div class="col-sm-4">
-<form method='GET' action='{% url 'cart' %}'>
+<form id='form-add' method='GET' action='{% url 'cart' %}'>
+    <p id='msg-jquery' class="lead"></p>
+    
     {% if object.variation_set.count > 1 %}
         <h3 id='price'>{{ object.variation_set.first.price }}</h3>
 
@@ -51,7 +75,7 @@
         <select name='item' class="form-control variation_select">
             {% for vari_obj in object.variation_set.all %}
             <option data-img="#" data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option>
-            {% endfor %}}
+            {% endfor %}
         </select>
 
     {% else %}
@@ -69,7 +93,7 @@
     {% endif %}
     <input class="form-control" type="number" name="qty" value="1" />
 <br/>
-<input type="submit" value="Add to cart" class="btn btn-default"/>
+<input id='btn-submit' type="submit" value="Add to cart" class="btn btn-default"/>
 </form>
 <br/>
 
