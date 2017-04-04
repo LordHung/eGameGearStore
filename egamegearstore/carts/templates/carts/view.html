@@ -25,8 +25,9 @@
                     } else {
                         $('#item-line-total-' + item).text(data.line_total);
                         $('#subtotal').text('Subtotal: ' + data.subtotal);
-                        console.log(data.subtotal)
+                        console.log(data.subtotal);
                     }
+                    showFlashMsg('Cart updated!');
                 },
                 error: function(response, error){
                     $('#form-add').submit();

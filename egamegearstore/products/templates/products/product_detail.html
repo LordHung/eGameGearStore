@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+<!-- Need to fix this load staticfiles -->
+{% load staticfiles %}
+<link href="{% static 'css/custom.css' %}" rel="stylesheet">
+
 <script>
     // change price if user select variation
     {% block jquery %}
@@ -29,8 +33,8 @@
             url: '{% url 'cart' %}',
             data: formData,
             success: function(data){
-                $('#msg-jquery').text('Added ' + data.item_added + ' Deleted ' +
-                data.deleted)
+                $('#msg-jquery').text('Added ' + data.item_added + ' Deleted ' + data.deleted);
+                showFlashMsg('Product added!');
             },
             error: function(response, error){
                 // console.log(response)
@@ -45,6 +49,7 @@
 </script>
 
 {% block content %}
+
 <div class="row">
 
 <div class="col-sm-8">
