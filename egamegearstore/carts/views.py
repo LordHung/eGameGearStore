@@ -31,6 +31,7 @@ class CartView(SingleObjectMixin, View):
         cart = self.get_object()
         item_id = request.GET.get('item')
         delete_item = request.GET.get('delete', False)
+        flash_msg = ''
         item_added = False
 
         if item_id:
@@ -45,10 +46,14 @@ class CartView(SingleObjectMixin, View):
             cart_item, created = CartItem.objects.get_or_create(
                 cart=cart, item=item_instance)
             if created:
+                flash_msg = 'Successfully added to the cart.'
                 item_added = True
             if delete_item:
+                flash_msg = 'Item removed successfully.'
                 cart_item.delete()
             else:
+                if not created:
+                    flash_msg = 'Quantity has been updated successfully.'
                 cart_item.quantity = qty
                 cart_item.save()
             if not request.is_ajax():
@@ -71,6 +76,7 @@ class CartView(SingleObjectMixin, View):
                 'item_added': item_added,
                 'line_total': total,
                 'subtotal': subtotal,
+                'flash_msg': flash_msg,
             })
 
         context = {

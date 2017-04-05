@@ -24,6 +24,7 @@
         // $("img").attr("src",img);
     });
 
+    // Ajax flash message
     $('#btn-submit').click(function(event){
         event.preventDefault();
         var formData=$('#form-add').serialize();
@@ -34,7 +35,7 @@
             data: formData,
             success: function(data){
                 $('#msg-jquery').text('Added ' + data.item_added + ' Deleted ' + data.deleted);
-                showFlashMsg('Product added!');
+                showFlashMsg(data.flash_msg);
             },
             error: function(response, error){
                 // console.log(response)
