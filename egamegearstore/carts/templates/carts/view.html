@@ -22,11 +22,19 @@
                     $('#msg-jquery').text('Added ' + data.item_added + 'Deleted ' + data.deleted)
                     if (data.deleted){
                         $('#item-' + item).fadeOut();
+                        $('#subtotal').text('Subtotal: ' + data.subtotal);
                     } else {
                         $('#item-line-total-' + item).text(data.line_total);
                         $('#subtotal').text('Subtotal: ' + data.subtotal);
                         // console.log(data.subtotal);
                     }
+
+                    if(data.total_items==0){
+                        $('.table').fadeOut();
+                        var template='{% include 'carts/empty_cart.html' %}';
+                        $('.main-content').html(template);
+                    }
+
                     showFlashMsg(data.flash_msg);
                 },
                 error: function(response, error){
@@ -42,6 +50,10 @@
 
 {% block content %}
 
+    <div class='row main-content'>
+    {% if object.cartitem_set.count < 1 %}
+        {% include "carts/empty_cart.html" %}
+    {% else %}
     <table class="table">
         
     {% for item in object.cartitem_set.all  %}
@@ -65,5 +77,7 @@
         <td id='subtotal' colspan="4" class='text-right'>Subtotal: {{ object.subtotal }}</td>
         
     </table>
-    
+
+    {% endif %}
+    </div>    
 {% endblock  %}
