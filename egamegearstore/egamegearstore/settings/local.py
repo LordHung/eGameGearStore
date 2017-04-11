@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'newsletter',
     'products',
     'carts',
+    'orders',
 )
 
 MIDDLEWARE_CLASSES = (
