@@ -50,6 +50,11 @@ class Cart(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
     subtotal = models.DecimalField(
         max_digits=50, decimal_places=2, default=0.00)
+    tax_percentage = models.DecimalField(
+        max_digits=10, decimal_places=5, default=0.085)
+    tax_total = models.DecimalField(
+        max_digits=50, decimal_places=2, default=0.00)
+    total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 
     # subtotal price
     # taxes total
@@ -65,5 +70,18 @@ class Cart(models.Model):
         itemList = self.cartitem_set.all()
         for item in itemList:
             subtotal += item.line_item_total
-        self.subtotal = subtotal
+        self.subtotal = '%.2f' % (subtotal)
         self.save()
+
+
+def do_tax_and_total_receiver(sender, instance, *args, **kwargs):
+    subtotal = Decimal(instance.subtotal)
+    tax_total = round(subtotal * Decimal(instance.tax_percentage), 2)
+    total = subtotal + tax_total
+
+    print(instance.tax_percentage)
+    instance.tax_total = '%.2f' % (tax_total)
+    instance.total = '%.2f' % (total)
+    # instance.save()
+
+pre_save.connect(do_tax_and_total_receiver, sender=Cart)
