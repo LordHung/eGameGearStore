@@ -36,6 +36,7 @@
                     }
 
                     showFlashMsg(data.flash_msg);
+                    updateCartItemCount();
                 },
                 error: function(response, error){
                     $('#form-add').submit();

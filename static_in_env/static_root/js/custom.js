@@ -9,6 +9,6 @@ function showFlashMsg(msg){
     $("body").append(template);
     $('.container-alert-flash').fadeIn();
     setTimeout(function(){
-    $('.container-alert-flash').fadeOut();
+	$('.container-alert-flash').fadeOut();
     }, 2000);
 }

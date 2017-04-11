@@ -34,7 +34,8 @@
             url: '{% url 'cart' %}',
             data: formData,
             success: function(data){
-                $('#msg-jquery').text('Added ' + data.item_added + ' Deleted ' + data.deleted);
+                // $('#msg-jquery').text('Added ' + data.item_added + ' Deleted ' + data.deleted);
+                updateCartItemCount();
                 showFlashMsg(data.flash_msg);
             },
             error: function(response, error){
