@@ -7,7 +7,7 @@ from django.db import models
 class UserCheckout(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, null=True, blank=True)
-    email = models.EmailField()  # required
+    email = models.EmailField(unique=True)  # required
     # merchant_id
 
     def __str__(self):
