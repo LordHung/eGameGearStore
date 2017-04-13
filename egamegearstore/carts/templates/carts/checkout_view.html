@@ -3,11 +3,17 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
+    <div class='col-sm-6'>
+        <p class='lead'>Continue as guest</p>
+        <form action="" method="post" accept-charset="utf-8">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-success" value="Continue as Guest" />
+        </form>
+    </div>
     
     {% if not user_can_continue %}
-    <div class='col-sm-6'>
-        <p class='lead'>Continue as Guest</p>
-    </div>
 
     <div class='col-sm-6'>
         <p class='lead'>Login to continue</p>

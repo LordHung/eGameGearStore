@@ -4,9 +4,12 @@ from django.http import Http404, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin, DetailView
+from django.views.generic.edit import FormMixin
 # Create your views here.
+
+from orders.forms import GuestCheckoutForm
 from products.models import Variation
-from carts.models import Cart, CartItem
+from .models import Cart, CartItem
 
 
 class ItemCountView(View):
@@ -121,9 +124,10 @@ class CartView(SingleObjectMixin, View):
         return render(request, template, context)
 
 
-class CheckoutView(DetailView):
+class CheckoutView(FormMixin, DetailView):
     model = Cart
     template_name = 'carts/checkout_view.html'
+    form_class = GuestCheckoutForm
 
     def get_object(self, *args, **kwargs):
         cart_id = self.request.session.get('cart_id')
@@ -142,4 +146,16 @@ class CheckoutView(DetailView):
         else:
             user_can_continue = True
         context['user_can_continue'] = user_can_continue
+        context['form'] = self.get_form()
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            print(form.cleaned_data.get('email'))
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_success_url(self):
+        return reverse('checkout')
