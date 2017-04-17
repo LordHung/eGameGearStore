@@ -33,14 +33,6 @@ class CartView(SingleObjectMixin, View):
     model = Cart
     template_name = 'carts/view.html'
 
-    def get_order(self, *args, **kwargs):
-        new_order_id = request.session.get('order_id')
-        if new_order_id is None:
-            new_order = Order.objects.create(cart=cart)
-            request.session['order_id'] = new_order.id
-        else:
-            new_order = Order.objects.get(id=new_order_id)
-
     def get_object(self, *args, **kwargs):
         self.request.session.set_expiry(0)  # second
         cart_id = self.request.session.get('cart_id')
@@ -138,6 +130,16 @@ class CheckoutView(FormMixin, DetailView):
     template_name = 'carts/checkout_view.html'
     form_class = GuestCheckoutForm
 
+    def get_order(self, *args, **kwargs):
+        new_order_id = self.request.session.get('order_id')
+        cart = self.get_object()
+        if new_order_id is None:
+            new_order = Order.objects.create(cart=cart)
+            self.request.session['order_id'] = new_order.id
+        else:
+            new_order = Order.objects.get(id=new_order_id)
+        return new_order
+
     def get_object(self, *args, **kwargs):
         cart_id = self.request.session.get('cart_id')
         if cart_id is None:
@@ -170,6 +172,7 @@ class CheckoutView(FormMixin, DetailView):
             user_checkout.save()
             self.request.session['user_checkout_id'] = user_checkout.id
 
+        context['order'] = self.get_order()
         context['user_can_continue'] = user_can_continue
         context['form'] = self.get_form()
         return context
@@ -193,13 +196,12 @@ class CheckoutView(FormMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         get_data = super(CheckoutView, self).get(request, *args, **kwargs)
-        cart = self.get_object()
+        # cart = self.get_object()
         new_order = self.get_order()
 
         user_checkout_id = request.session.get('user_checkout_id')
         if user_checkout_id is not None:
             user_checkout = UserCheckout.objects.get(id=user_checkout_id)
-
             billing_address_id = request.session.get('billing_address_id')
             shipping_address_id = request.session.get('shipping_address_id')
 
@@ -211,7 +213,7 @@ class CheckoutView(FormMixin, DetailView):
                 shipping_address = UserAddress.objects.get(
                     id=shipping_address_id)
 
-            new_order.cart = cart
+            # new_order.cart = cart
             new_order.user = user_checkout
             new_order.billing_address = billing_address
             new_order.shipping_address = shipping_address
