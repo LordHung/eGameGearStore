@@ -126,7 +126,7 @@ class CartView(SingleObjectMixin, View):
         return render(request, template, context)
 
 
-class CheckoutView(CartOrderMixin,FormMixin, DetailView):
+class CheckoutView(CartOrderMixin, FormMixin, DetailView):
     model = Cart
     template_name = 'carts/checkout_view.html'
     form_class = GuestCheckoutForm
@@ -195,7 +195,7 @@ class CheckoutView(CartOrderMixin,FormMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         get_data = super(CheckoutView, self).get(request, *args, **kwargs)
-        cart=self.get_object()
+        cart = self.get_object()
         # if remove everything and try to checkout, it'll redirect to cart
         if cart is None:
             return redirect('cart')
@@ -211,3 +211,15 @@ class CheckoutView(CartOrderMixin,FormMixin, DetailView):
             new_order.user = user_checkout
             new_order.save()
         return get_data
+
+
+class CheckoutFinalView(CartOrderMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        order = self.get_order()
+        if request.POST.get('payment_token') is not None:
+            print(order.cart.itemList.all())
+        return redirect('checkout')
+
+    def get(self, request, *args, **kwargs):
+        return redirect('checkout')

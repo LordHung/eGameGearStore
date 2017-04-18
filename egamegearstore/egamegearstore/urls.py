@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from egamegearstore import views as egamegearstore_view
 from newsletter import views as newsletter_view
-from carts.views import CartView, ItemCountView, CheckoutView
+from carts.views import CartView, ItemCountView, CheckoutView, CheckoutFinalView
 from orders.views import AddressSelectFormView, UserAddressCreateView
 # from products import views as products_view
 
@@ -41,7 +41,9 @@ urlpatterns = [
     url(r'^checkout/address/$', AddressSelectFormView.as_view(),
         name='order_address'),
     url(r'^checkout/address/add/$',
-        UserAddressCreateView.as_view(), name='user_address_create')
+        UserAddressCreateView.as_view(), name='user_address_create'),
+    url(r'^checkout/final/$',CheckoutFinalView.as_view(),name='checkout_final'),
+
 ]
 
 if settings.DEBUG:
