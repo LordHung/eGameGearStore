@@ -3,6 +3,9 @@
 
 {% block content %}
 
+    <div class='col-sm-4 col-sm-offset-4 text-center'>
+        <p class='lead'>Select your addresses for this order.</p> 
+
     <form method='post' action=''>{% csrf_token %}
     
     {{ form|crispy }} 
@@ -11,4 +14,5 @@
 
     </form>
 
+    </div>
 {% endblock %}
