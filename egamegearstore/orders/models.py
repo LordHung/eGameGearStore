@@ -1,19 +1,48 @@
 from decimal import Decimal
 from django.conf import settings
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 # Create your models here.
 from carts.models import Cart
+
+
+import braintree
+
+# Braintree config
+if settings.DEBUG:
+    braintree.Configuration.configure(
+        braintree.Environment.Sandbox,
+        'nmn2ddgvqdwmny6d',
+        'hnnd7jzyrdcgnj2z',
+        'e8a55aa7ae57dcb9dfb10cf97ee0037f'
+    )
 
 
 class UserCheckout(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, null=True, blank=True)
     email = models.EmailField(unique=True)  # required
-    # merchant_id
+    braintree_id = models.CharField(max_length=120, null=True, blank=True)
 
     def __str__(self):
         return self.email
+
+
+def update_braintree_id(sender, instance, *args, **kwargs):
+    if not instance.braintree_id:
+        # update it
+        result = braintree.Customer.create({
+            "email": instance.email,
+        })
+
+        if result.is_success:
+            print(result)
+            instance.braintree_id = result.customer.id
+            instance.save()
+        pass
+
+
+post_save.connect(update_braintree_id, sender=UserCheckout)
 
 
 # billing: store in db; Billing: display on form
@@ -71,5 +100,6 @@ def order_pre_save(sender, instance, *args, **kwargs):
     cart_total = instance.cart.total
     order_total = Decimal(shipping_total_price) + cart_total
     instance.order_total = order_total
+
 
 pre_save.connect(order_pre_save, sender=Order)
