@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 # Create your models here.
@@ -115,6 +116,13 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.cart.id)
+
+    class Meta:
+        # order order id reverse
+        ordering = ['-id']
+
+    def get_absolute_url(self):
+        return reverse('order_detail', kwargs={'pk': self.pk})
 
     def mark_completed(self, order_id=None):
         self.status = 'paid'

@@ -2,10 +2,28 @@
 
 
 {% block content %}
-   {% for object in object_list  %}
-       <li>
-           {{ object.id }}
-           {{ object.cart.itemList.all }}
-       </li>
-   {% endfor %} 
+
+    
+    {% if not object_list|length <= 0 %}
+        <div class='col-sm-6 col-sm-offset-3 text-center'>
+            <p class='lead'>You do not currently have orders.</p>
+        </div>
+    {% else %}
+    <div class='col-sm-6 col-sm-offset-3'>
+    <h1>Your Order</h1>
+    <table class='table table-bordered table-hover'>
+        {% for object in object_list  %}
+            <tr>
+                <td>
+                    <a href="{{ object.get_absolute_url }}"> View #{% if object.order_id %}{{ object.order_id }}{% else %}{{ object.id }}{% endif %}</a>
+                </td>
+                <td>
+                    Item count: {{ object.cart.itemList.count }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table> 
+    </div>
+
+    {% endif %}
 {% endblock content %}
