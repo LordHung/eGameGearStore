@@ -10,11 +10,17 @@ import braintree
 
 # Braintree config
 if settings.DEBUG:
+    # braintree.Configuration.configure(
+    #     braintree.Environment.Sandbox,
+    #     'nmn2ddgvqdwmny6d',
+    #     'hnnd7jzyrdcgnj2z',
+    #     'e8a55aa7ae57dcb9dfb10cf97ee0037f'
+    # )
     braintree.Configuration.configure(
         braintree.Environment.Sandbox,
-        'nmn2ddgvqdwmny6d',
-        'hnnd7jzyrdcgnj2z',
-        'e8a55aa7ae57dcb9dfb10cf97ee0037f'
+        merchant_id=settings.BRAINTREE_MERCHANT_ID,
+        public_key=settings.BRAINTREE_PUBLIC,
+        private_key=settings.BRAINTREE_PRIVATE
     )
 
 
@@ -27,19 +33,35 @@ class UserCheckout(models.Model):
     def __str__(self):
         return self.email
 
+    @property
+    def get_braintree_id(self):
+        instance = self
+        if not instance.braintree_id:
+            # update it
+            result = braintree.Customer.create({
+                "email": instance.email,
+            })
+
+            if result.is_success:
+                print(result)
+                instance.braintree_id = result.customer.id
+                instance.save()
+        return instance.braintree_id
+
+    def get_client_token(self):
+        customer_id = self.get_braintree_id
+        if customer_id:
+            client_token = braintree.ClientToken.generate({
+                "customer_id": customer_id
+            })
+            return client_token
+        return None
+
 
 def update_braintree_id(sender, instance, *args, **kwargs):
     if not instance.braintree_id:
         # update it
-        result = braintree.Customer.create({
-            "email": instance.email,
-        })
-
-        if result.is_success:
-            print(result)
-            instance.braintree_id = result.customer.id
-            instance.save()
-        pass
+        instance.get_braintree_id
 
 
 post_save.connect(update_braintree_id, sender=UserCheckout)
@@ -70,7 +92,10 @@ class UserAddress(models.Model):
 
 ORDER_STATUS_CHOICES = (
     ('created', 'Created'),
-    ('completed', 'Completed')
+    ('completed', 'Completed'),
+    ('paid', 'Paid'),
+    ('shipped', 'Shipped'),
+    ('refunded', 'Refunded'),
 )
 
 
@@ -86,12 +111,15 @@ class Order(models.Model):
     shipping_total_price = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.00)
     order_total = models.DecimalField(max_digits=10, decimal_places=2)
+    order_id = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return str(self.cart.id)
 
-    def mark_completed(self):
-        self.status = 'completed'
+    def mark_completed(self, order_id=None):
+        self.status = 'paid'
+        if order_id and not self.order_id:
+            self.order_id = order_id
         self.save()
 
 
@@ -103,3 +131,7 @@ def order_pre_save(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(order_pre_save, sender=Order)
+
+
+# if order status == refunded
+# braintree refund ...

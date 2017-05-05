@@ -1,3 +1,6 @@
+import braintree
+from django.conf import settings
+
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
@@ -13,6 +16,14 @@ from orders.mixins import CartOrderMixin
 from orders.models import UserCheckout, UserAddress, Order
 from products.models import Variation
 from .models import Cart, CartItem
+
+
+braintree.Configuration.configure(
+    braintree.Environment.Sandbox,
+    merchant_id=settings.BRAINTREE_MERCHANT_ID,
+    public_key=settings.BRAINTREE_PUBLIC,
+    private_key=settings.BRAINTREE_PRIVATE
+)
 
 
 class ItemCountView(View):
@@ -151,7 +162,9 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
                 email=self.request.user.email)
             user_checkout.user = self.request.user
             user_checkout.save()
+            context['client_token'] = user_checkout.get_client_token()
             self.request.session['user_checkout_id'] = user_checkout.id
+        # if user is not authenticated
         elif not self.request.user.is_authenticated() \
                 and user_check_id is None:
             context['login_form'] = AuthenticationForm()
@@ -161,6 +174,9 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 
         if user_check_id is not None:
             user_can_continue = True
+            if not self.request.user.is_authenticated():  # Guest User
+                user_checkout_2 = UserCheckout.objects.get(id=user_check_id)
+                context['client_token'] = user_checkout_2.get_client_token()
 
         context['order'] = self.get_order()
         context['user_can_continue'] = user_can_continue
@@ -196,7 +212,8 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
         if user_checkout_id is not None:
             user_checkout = UserCheckout.objects.get(id=user_checkout_id)
 
-            if new_order.billing_address is None or new_order.shipping_address is None:
+            if new_order.billing_address is None\
+                    or new_order.shipping_address is None:
                 return redirect('order_address')
 
             new_order.user = user_checkout
@@ -207,7 +224,36 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 class CheckoutFinalView(CartOrderMixin, View):
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
+        # The payment method nonce is a string returned by the client SDK to
+        # represent a payment method
         order = self.get_order()
+        order_total = order.order_total
+        nonce = request.POST.get('payment_method_nonce')
+        if nonce:
+            result = braintree.Transaction.sale({
+                "amount": order_total,
+                "payment_method_nonce": nonce,
+                "billing": {
+                    "postal_code": "%s" % (order.billing_address.zipcode),
+                },
+                "options": {
+                    "submit_for_settlement": True
+                }
+            })
+
+        if result.is_success:
+            # result.transaction.id to order
+            print(result.transaction.id)
+            order.mark_completed(order_id=result.transaction.id)
+            messages.success(request, 'Thank you for your order.')
+            del request.session['cart_id']
+            del request.session['order_id']
+        else:
+            # messages.success(request, 'There was a problem with your order.')
+            messages.success(request, "%s" % (result.message))
+            return redirect('checkout')
+
         if request.POST.get('payment_token') is not None:
             print(order.cart.itemList.all())
             # after order completed, del cart and order
