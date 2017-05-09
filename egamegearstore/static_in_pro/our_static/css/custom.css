@@ -1,15 +1,15 @@
 .text-align-center {
-	text-align: center;
+    text-align: center;
 }
 
 .ori-price {
-	color:red;
-	text-decoration:line-through;
+    color: red;
+    text-decoration: line-through;
 }
 
 .fa-navbar-cart {
-	font-size: 18px;
-	vertical-align: middle;
+    font-size: 18px;
+    vertical-align: middle;
 }
 
 .container-alert-flash {
